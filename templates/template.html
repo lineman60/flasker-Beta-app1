@@ -7,10 +7,10 @@
 </head>
 <body>
 <div class="page">
-    {% for mesage in get flashed_messages() %}
-    <div class="flash">{{  mesage }}</div>
+    {% for mesage in get_flashed_messages() %}
+     <div class="flash">{{  message }}</div>
     {% endfor %}
-    { % if error % }
+    {% if error %}
      <div class="error"><strong>Error:</strong>{{ error }} </div>
     {% endif %}
     {% block content %}
