@@ -2,7 +2,7 @@ __author__ = 'Beryl'
 #views.py
 
 from flask import Flask, flash, redirect, render_template, request, \
-    sessions, url_for, g
+    session, url_for, g
 
 from functools import wraps
 
@@ -19,7 +19,7 @@ def connect_db():
 def login_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
-        if 'logged_in' in sessions:
+        if 'logged_in' in session:
             return test(*args, **kwargs)
         else:
             flash('You need to login first')
@@ -28,35 +28,36 @@ def login_required(test):
 
 @app.route('/logout/')
 def logout():
-    sessions.pop('logged_in', None)
+    session.pop('logged_in', None)
     flash('You are logged out, C\'ya')
     return redirect(url_for('login'))
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME'] \
-            or request.form['password'] != app.config['PASSWORD']:
+        if request.form['username'] != app.config['USERNAME'] or request.form['password'] != app.config['PASSWORD']:
             error = 'Invalid Credentinals. Plase try again'
             return render_template('login.html', error=error)
         else:
-            sessions['logged_in'] = True
+            session['logged_in'] = True
             return redirect(url_for('tasks'))
     if request.method == 'GET':
         return render_template('login.html')
 
 
-@app.route('/tasks')
+@app.route('/tasks/')
 @login_required
-def task():
+def tasks():
     g.db = connect_db()
     cur = g.db.execute(
-        'select name, due_date, priority, task_id, from tasks where status=1'
+        'select name, due_date, priority, task_id from tasks where status=1'
     )
     open_task = [dict(name=row[0], due_date=row[1], priority=row[2], task_id=row[3]) for row in cur.fetchall()]
-    g.db.close()
+    cur = g.db.execute(
+        'select name, due_date, priority, task_id from tasks where status=0')
+    closed_tasks = [dict(name=row[0], due_date=row[1], priority=row[2], task_id=row[3]) for row in cur.fetchall()]
     return render_template('tasks.html', form=AddTaskForm(request.form), open_task=open_task,
-     closed_tasks=closed_tasks
+     closed_tasks = closed_tasks
     )
 
 #add new Tasks:
@@ -65,7 +66,7 @@ def task():
 def new_task():
     g.db = connect_db()
     name = request.form['name']
-    date= request.form['due_date']
+    date = request.form['due_date']
     priority = request.form['priority']
     if not name or not date or not priority:
         flash("All fields are required. Please try again")
@@ -92,7 +93,7 @@ def complete(task_id):
     return redirect(url_for('tasks'))
 
 #delete Tasks:
-@pp.route('/delete/<int:task_id>/',)
+@app.route('/delete/<int:task_id>/',)
 @login_required
 def delete_entry(task_id):
     g.db = connect_db()
