@@ -53,7 +53,7 @@ def task():
     )
     open_task = [dict(name=row[0], due_date=row[1], priority=row[2], task_id=row[3]) for row in cur.fetchall()]
     g.db.close()
-    return render_template('tasks.html', form=AddTaslForm(request.form), open_task=open_task,
+    return render_template('tasks.html', form=AddTaskForm(request.form), open_task=open_task,
      closed_tasks=closed_tasks
     )
 
