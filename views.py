@@ -6,6 +6,8 @@ from flask import Flask, flash, redirect, render_template, request, \
 
 from functools import wraps
 
+from forms import AddTaskForm
+
 import sqlite3
 
 app = Flask(__name__)
