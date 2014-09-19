@@ -72,8 +72,8 @@ def new_task():
         flash("All fields are required. Please try again")
         return redirect(url_for('tasks'))
     else:
-        g.db.execute('insert into tasks (name, due_date, priority, status) values (?, ?, ?, 1)', [request.form['name'], request.form['due_date'],
-                     request.form['name'], request.form['due_date'], request.form['priority']])
+        g.db.execute('insert into tasks (name, due_date, priority, status) values (?, ?, ?, 1)', [request.form['name'],
+                request.form['due_date'], request.form['priority']])
         g.db.commit()
         g.db.close()
         flash('new entery was successfully posted. Thanks')
