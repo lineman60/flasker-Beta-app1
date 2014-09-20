@@ -3,6 +3,7 @@ __author__ = 'Beryl'
 
 from flask import Flask, flash, redirect, render_template, request, \
     session, url_for
+from models import Task
 
 from functools import wraps
 
@@ -73,7 +74,7 @@ def tasks():
 def new_task():
     form = AddTaskForm(request.form)
     if request.method == 'POST':
-        if form.validate_on_submit()
+        if form.validate_on_submit():
             new_task = Task(
                 form.name.data,
                 form.due_date.data,
