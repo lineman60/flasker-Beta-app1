@@ -6,8 +6,8 @@ from datetime import date
 
 
 db.create_all()
-db.session.add(Task("Finish this tutorial", "09/16/2015", 10, 1))
-db.session.add(Task("Finsh Real Python Course 2", "09/17/2015", 10, 1))
+db.session.add(Task("Finish this tutorial", "9/16/2015", 10, 1))
+db.session.add(Task("Finish Real Python Course 2", "9/17/2015", 10, 1))
 db.session.commit()
 
 #import sqlite3
