@@ -22,7 +22,7 @@ def register():
     error = None
     form = RegisterForm(request.form)
     if request.method == 'POST':
-        if validate_on_submit():
+        if form.validate_on_submit():
             new_user = User(
                 form.name.data,
                 form.email.data,
@@ -81,6 +81,7 @@ def tasks():
 @app.route('/add/', methods=['GET', 'POST'])
 @login_required
 def new_task():
+    import datetime
     form = AddTaskForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -88,6 +89,8 @@ def new_task():
                 form.name.data,
                 form.due_date.data,
                 form.priority.data,
+                datetime.datetime.utcnow(),
+                '1',
                 '1'
             )
             db.session.add(new_task)
