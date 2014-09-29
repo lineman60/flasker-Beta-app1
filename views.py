@@ -57,6 +57,7 @@ def logout():
     flash('You are logged out, C\'ya')
     return redirect(url_for('login'))
 
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
@@ -68,17 +69,23 @@ def login():
                 password=request.form['password']
             ).first()
             if u is None:
-                error = 'Invalid Credentials. Please try again'
-                return render_template("login.html", form=form, error=error)
+                error = 'Invalid username or password.'
+                return render_template(
+                    "login.html",
+                    form=form,
+                    error=error
+                )
             else:
                 session['logged_in'] = True
-                flash('You are logged in')
+                session['user_id'] = u.id
+                flash('You are logged in. Go Crazy.')
                 return redirect(url_for('tasks'))
         else:
             return render_template(
                 "login.html",
                 form=form,
-                error=error)
+                error=error
+            )
     if request.method == 'GET':
         return render_template('login.html', form=form)
 
