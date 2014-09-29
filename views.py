@@ -8,6 +8,8 @@ from functools import wraps
 
 from flask.ext.sqlalchemy import SQLAlchemy
 
+from sqlalchemy.exc import IntegrityError
+
 from forms import AddTaskForm, RegisterForm, LoginForm
 
 app = Flask(__name__)
@@ -16,6 +18,12 @@ db = SQLAlchemy(app)
 
 
 from models import Task, User
+
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u"Errror in the %s field - %s" %(getattr(form, field).label.text, error), 'error')
+
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -33,6 +41,7 @@ def register():
             flash('Thanks for Registering. please log in')
             return redirect(url_for('login'))
         else:
+            flash_errors(form)
             return render_template('registration.html', form=form, error=error)
     if request.method == 'GET':
         return render_template('registration.html', form=form)
